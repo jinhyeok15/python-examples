@@ -11,7 +11,7 @@ for _ in range(R):
     farm.append(list(input()))
 
 
-def _dfs(current, visited: dict, record, counter: defaultdict) -> Optional[defaultdict]:
+def _dfs(current, visited: dict, counter: defaultdict) -> Optional[defaultdict]:
     y, x = current
     _key = f"{y} {x}"
     if _key in visited: return
@@ -25,7 +25,7 @@ def _dfs(current, visited: dict, record, counter: defaultdict) -> Optional[defau
     for path in pathes:
         _next = go(current, path, R, C)
         if _next is None: continue
-        _dfs(_next, visited, record, counter)
+        _dfs(_next, visited, counter)
 
 
 def go(current, path, max_row, max_col) -> Optional[tuple]:
@@ -48,7 +48,7 @@ for r in range(R):
 
         if _key in visited: continue
         counter = defaultdict(int)
-        _dfs((r, c), visited, record, counter)
+        _dfs((r, c), visited, counter)
         
         if counter["v"] >= counter["k"]:
             record[1] += counter["v"]
