@@ -6,15 +6,16 @@ curr = 0
 count = 0
 for i in range(len(group)):
     cursor = i
-    fear = group[cursor]
-    if fear == curr: continue
+    if group[cursor] == curr: continue
 
     tmp_count = 0
     while cursor < len(group):
-        if cursor + fear > len(group): break
-        cursor += fear
         fear = group[cursor]
+        cursor += fear
+        if cursor > len(group): break
         tmp_count += 1
+        if cursor == len(group): continue
+        fear = group[cursor]
 
     count = max(count, tmp_count)
     curr = group[i]
