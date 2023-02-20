@@ -1,3 +1,5 @@
+from bisect import insort
+
 N, M = map(int, input().split())
 
 packages = []
@@ -5,10 +7,10 @@ units = []
 
 for _ in range(M):
     pp, up = map(int, input().split())
-    packages.append(pp)
-    units.append(up)
-min_package = min(packages)
-min_unit = min(units)
+    insort(packages, pp)
+    insort(units, up)
+min_package = packages[0]
+min_unit = units[0]
 
 money = 0
 money += N // 6 * min(min_package, min_unit*6)
