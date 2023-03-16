@@ -1,40 +1,20 @@
 import heapq
 
-def dijkstra(graph, start, default=0):
-    n = len(graph)
-    dist = [float('inf')] * n
-    dist[start] = default
-    heap = [(0, start)]
-    
-    while heap:
-        d, u = heapq.heappop(heap)
-        if d > dist[u]:
-            continue
-        for v, w in graph[u]:
-            new_dist = dist[u] + w
-            if new_dist < dist[v]:
-                dist[v] = new_dist
-                heapq.heappush(heap, (new_dist, v))
-                
-    return dist
 
-def solution(cave):
-    n = len(cave)
-    graph = [[] for _ in range(n*n)]
-    
-    for i in range(n):
-        for j in range(n):
-            if i > 0:
-                graph[n*i+j].append((n*(i-1)+j, cave[i-1][j]))
-            if i < n-1:
-                graph[n*i+j].append((n*(i+1)+j, cave[i+1][j]))
-            if j > 0:
-                graph[n*i+j].append((n*i+j-1, cave[i][j-1]))
-            if j < n-1:
-                graph[n*i+j].append((n*i+j+1, cave[i][j+1]))
-                
-    dist = dijkstra(graph, 0, cave[0][0])
-    return dist[n*n-1]
+def go(path, N):
+    y, x = path
+    dy = [0, 0, 1, -1]
+    dx = [1, -1, 0, 0]
+
+    results = []
+    for i in range(4):
+        ny = y+dy[i]
+        nx = x+dx[i]
+        if ny < 0 or nx < 0 or ny >= N or nx >= N:
+            continue
+        results.append((ny, nx))
+
+    return results
 
 
 cnt = 1
@@ -44,5 +24,25 @@ while True:
     cave = []
     for i in range(N):
         cave.append(list(map(int, input().split())))
-    print(f"Problem {cnt}: {solution(cave)}")
+    
+    min_plan = [[float('inf') for _ in range(N)] for _ in range(N)]
+    start = (0, 0)
+    min_plan[start[0]][start[1]] = cave[start[0]][start[1]]
+
+    queue = [(cave[start[0]][start[1]], start)]
+    while queue:
+        v, curr = heapq.heappop(queue)
+
+        if min_plan[curr[0]][curr[1]] < v:
+            continue
+
+        for path in go(curr, N):
+            y, x = path
+            acc = v+cave[y][x]
+
+            if acc < min_plan[y][x]:
+                min_plan[y][x] = acc
+                heapq.heappush(queue, (acc, path))
+
+    print(f"Problem {cnt}: {min_plan[N-1][N-1]}")
     cnt += 1
