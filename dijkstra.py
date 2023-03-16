@@ -17,10 +17,10 @@ def dijkstra(graph, start):
     min_plan = {node: float('inf') for node in graph}  # start로부터 거리 값을 저장하기 위함
     min_plan[start] = 0  # 시작 값은 0이어야 함
     queue = []
-    heapq.heappush(queue, (start, min_plan[start]))
+    heapq.heappush(queue, (min_plan[start], start))
 
     while queue:
-        curr, v = heapq.heappop(queue)
+        v, curr = heapq.heappop(queue)
 
         # 기존의 거리보다 더 긴 경로를 찾은 경우 무시
         if min_plan[curr] < v:
@@ -32,6 +32,6 @@ def dijkstra(graph, start):
             # 더 짧은 경로를 찾은 경우, 거리 값을 업데이트
             if acc < min_plan[node]:
                 min_plan[node] = acc
-                heapq.heappush(queue, (node, acc))
+                heapq.heappush(queue, (acc, node))
 
     return min_plan
