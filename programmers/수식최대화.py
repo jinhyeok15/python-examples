@@ -25,8 +25,8 @@ def solution(expression):
             flag = False
             for i in range(len(plan)):
                 if plan[i] == sign:
-                    dp[idx+1].append(calculate(dp[idx+1][-1], plan[i+1], plan[i]))
-                    dp[idx+1].pop(-2)
+                    preval = dp[idx+1][-1]
+                    dp[idx+1][-1] = calculate(preval, plan[i+1], plan[i])
                     flag = True
                 elif flag and isinstance(plan[i], int):
                     flag = False
