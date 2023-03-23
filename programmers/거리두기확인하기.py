@@ -14,6 +14,7 @@ def dfs(data, start, place, visited, path, walk=0):
         
         visited[ny][nx] = True
         dfs(data, start, place, visited, (ny, nx), walk+1)
+        visited[ny][nx] = False
 
 
 def solution(places):
@@ -23,6 +24,7 @@ def solution(places):
         visited = [[False for _ in range(5)] for _ in range(5)]
         for y in range(5):
             if answer[i] is not None: break
+            
             for x in range(5):
                 if answer[i] is not None: break
                 
@@ -31,7 +33,7 @@ def solution(places):
                     visited[y][x] = True
                     data = []
                     dfs(data, start, place, visited, path=start)
-                    
+
                     for m in data:
                         if m <= 2:
                             answer[i] = 0; break
