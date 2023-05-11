@@ -1,65 +1,43 @@
-N, M, I = map(int, input().split())
-board = {}
+N, M, B = map(int, input().split())
+graph = [list(map(int, input().split())) for _ in range(N)]
+
+# 최소와 최대 높이를 구한다.
+max_h, min_h = 0, 256
+sorted_by_h = []
 for i in range(N):
-    for j, h in enumerate(map(int, input().split())):
-        board[(i, j)] = h
+    for j in range(M):
+        v = graph[i][j]
+        min_h = min(v, min_h)
+        max_h = max(v, max_h)
+        sorted_by_h.append(v)
+sorted_by_h.sort(reverse=True)
 
 
-class Work:
-    def __init__(self, inventory, board):
-        self.inventory = inventory
-        self.board = board
-        self.time = 0
-    
-    def remove(self, path):
-        if self.board[path] == 0:
-            return 0
-        self.board[path] -= 1
-        self.inventory += 1
-        self.time += 2
-        return 1
-    
-    def push(self, path):
-        if self.board[path] == 256:
-            return 0
-        if self.inventory == 0:
-            return 0
-        self.board[path] += 1
-        self.inventory -= 1
-        self.time += 1
-        return 1
-
-    def is_flat(self):
-        return len(set(self.board.values())) == 1
-    
-    @property
-    def max_height(self):
-        return max(self.board.values())
-    
-    @property
-    def min_height(self):
-        return min(self.board.values())
+def get_total_time(columns, graph, h):
+    inv = B
+    total = 0
+    for v in columns:
+        if v == h:
+            continue
+        elif v < h:
+            if inv >= h-v:
+                inv -= h-v
+                total += h-v
+            else:
+                return None
+        else:
+            inv += v-h
+            total += (2*(v-h))
+    return total
 
 
-w = Work(I, board)
+answer = float('inf')
+height = 0
+for h in range(min_h, max_h+1):
+    total_time = get_total_time(sorted_by_h, graph, h)
+    if total_time is not None:
+        if answer >= total_time:
+            answer = total_time
+            height = h
 
-while not w.is_flat():
-    min_keys = [key for key, value in w.board.items() if value == w.min_height]
-    max_keys = [key for key, value in w.board.items() if value == w.max_height]
-
-    flag = False
-    if len(max_keys) * 2 >= len(min_keys):
-        if w.inventory >= len(min_keys):
-            for key in min_keys:
-                sts = w.push(key)
-                if sts == 0:
-                    flag = True; break
-        if flag: break
-    else:
-        for key in max_keys:
-            sts = w.remove(key)
-            if sts == 0:
-                flag = True; break
-        if flag: break
-
-print(*[w.time, w.max_height])
+print(*[answer, height])
