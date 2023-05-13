@@ -6,24 +6,28 @@ M 이상을 얻을 수 있는 나무 높이 idx - 1 인 나무 높이에서 추�
 나무 높이의 최댓값 maxH까지를 이진 탐색으로 탐색할 경우 O(log(maxH))의 시간 복잡도가 소요되는데,
 log(maxH) * N 인 시간 복잡도와 비교했을 때,
 나무 높이 증분을 dh라 하면
-위의 풀이에서는 O(Nlog(N)) + O(dh)이 소요되는데 dh는 N의 길이가 커질 수록 작아지는 경향이 있기에
-N의 길이가 크다면 위의 풀이가 압도적으로 빠르지 않을까?
+위의 풀이에서는 O(Nlog(N)) + O(log(dh))이 소요되는데 dh는 N의 길이가 커질 수록 작아지는 경향이 있기에
+N의 길이가 크다면 위의 풀이가 더 빠르지 않을까?
 
 또한 위의 풀이의 단점이 dh가 클 경우인데, 사실상 dh가 커지면 위의 이진 탐색 풀이도 시간복잡도를 장담할 수 없음...
 왜냐하면 maxH는 dh보다 크기 때문
 """
+import sys
 
-N, M = map(int, input().split())
-heights = sorted([int(s) for s in input().split()], reverse=True)
+input_ = sys.stdin.read().splitlines()
+N,M = map(int,input_[0].split())
+heights = sorted([int(i) for i in input_[1].split()], reverse=True)
 
-
-def get_more_height(need, target_tree):
-    moreh = 0
-    while True:
-        value = target_tree * moreh
-        if need <= value:
-            return moreh
-        moreh += 1
+def get_more_height(need, target_tree, delta):
+    lo = 0
+    hi = delta
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if need > mid * target_tree:
+            lo = mid + 1
+        else:
+            hi = mid
+    return lo
 
 
 def get_height(heights, M):
@@ -37,11 +41,11 @@ def get_height(heights, M):
         if v == M:
             return heights[i]
         if v > M:
-            return heights[i-1] - get_more_height(M-earns[i-1], i)
+            return heights[i-1] - get_more_height(M-earns[i-1], i, dh)
         earns.append(v)
     
 
     need = M-earns[-1]
-    return heights[-1] - get_more_height(need, len(heights))
+    return heights[-1] - get_more_height(need, len(heights), heights[-1])
 
 print(get_height(heights, M))
