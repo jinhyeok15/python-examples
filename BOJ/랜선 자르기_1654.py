@@ -17,17 +17,12 @@ def count_line_unit(unit_length, lines):
 lo = 1
 hi = max(lines)
 
-while lo < hi:
+while lo <= hi:
     mid = (lo + hi) // 2
     unit = count_line_unit(mid, lines)
     if unit < N:
-        hi = mid
+        hi = mid - 1
     else:
         lo = mid + 1
 
-unit = count_line_unit(lo, lines)
-
-if unit < N:
-    print(lo-1)
-else:
-    print(lo)
+print(hi)
